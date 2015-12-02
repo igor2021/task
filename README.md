@@ -163,6 +163,15 @@ Setting up phppgadmin (5.1-1) ...
 # wget http://c.vestacp.com/0.9.8/debian/pg_hba.conf -O /etc/postgresql/*/main/pg_hba.conf
 ```
 
+```
+# service postgresql restart
+```
+
+```
+# su - postgres
+> psql -c "ALTER USER postgres WITH PASSWORD '<password>'"
+> exit
+```
 
 
 
