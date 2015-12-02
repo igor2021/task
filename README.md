@@ -5,6 +5,7 @@ Hosting
 
 Текст задания как есть (но далее будем корректировать):
 
+```
 1. ОС:Ubuntu  
 2. Админ панель? возможность работать и смотреть графики 
 3. Установить пакеты Dotplant2 YII2
@@ -35,6 +36,7 @@ gunzip youfh_2015-03-10_06h47m.Tuesday.sql.gz
 mysql -u root -p youfh < youfh_2015-04-08_11h53m.Wednesday.sql
 tar -cvzf mylinker_02_07.tar.gz /var/www/mylinker
 tar -xvf youfh_19_05_afternoon.tar.gz -C /var/www/archive/
+```
 
 
 # Порядок выполнения задания
