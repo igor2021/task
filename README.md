@@ -68,7 +68,7 @@ tar -xvf youfh_19_05_afternoon.tar.gz -C /var/www/archive/
   * apache2 is not running
 ```
 
-Так же отключим автозагрузку службы `apache2`:
+Так же можем отключим автозагрузку службы `apache2`:
 
 ```
 # apt-get install sysv-rc-conf
@@ -84,7 +84,7 @@ tar -xvf youfh_19_05_afternoon.tar.gz -C /var/www/archive/
 # sysv-rc-conf --list
 ```
 
-Чтобы обратно влкючить автозагрузку службы `apache2` необходимо выполнить:
+Чтобы обратно влкючить автозагрузку службы `apache2` необходимо выполнить (включим т.к. точно не знаем будем ли полностью отказыватся от службы):
 
 ```
 # sysv-rc-conf apache2 on
@@ -130,20 +130,62 @@ PS. Также можно посмотреть какие службы уста�
 Тажке упоминание об этом порте `8083` есть в файле `/etc/roundcube/plugins/password/config.inc.php`.
 
 
+
+# 1.3. Проверка и установка PostgerSQL
+
+Проверим статус службы `postgresql`:
+```
+# service postgresql status
+postgresql: unrecognized service
+```
+
+Проверим установлен ли пакет `postgresql`:
+
+```
+# dpkg -s postgresql | grep Status
+```
+
+Предварительно также читаем: `http://vestacp.com/docs/` (How to set up PostgreSQL on a Debian or Ubuntu).
+
+Установим пакет `postgresql`:
+
+```
+# apt-get install postgresql postgresql-contrib phppgadmin
+Setting up phppgadmin (5.1-1) ...
+ * Reloading web server apache2         * 
+ * Apache2 is not running
+```
+
+Видим, что `phppgadmin` спрашивает `Apache2`. Поэтому включим эту службу (см. п. 1.1).
+
+```
+# cp /etc/postgresql/9.3/main/pg_hba.conf /etc/postgresql/9.3/main/pg_hba.conf.src
+# wget http://c.vestacp.com/0.9.8/debian/pg_hba.conf -O /etc/postgresql/*/main/pg_hba.conf
+```
+
+
+
+
 # 2. Создание пользователя
 
 Создадим нового пользователя в каталоге которого разместим CMS "Dotplant2".
 
 
 ```
-# adduser <username>
+# adduser ecom
 ```
 
 ```
-# passwd <username>
+# passwd ecom
 	password: <password>
 ```
 
+# 3.1. Установка необходимых пакетов для CMS "Dotplant2"  
 
 
 
+# 3.2. Установка CMS "Dotplant2"
+
+Вся установка будет производится от пользователя `ecom`.
+
+ 
