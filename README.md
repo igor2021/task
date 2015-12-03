@@ -222,7 +222,7 @@ DB_SYSTEM='mysql,pgsql'
 
 
 
-# 3.1. Установка необходимых пакетов для CMS "Dotplant2"  
+# 3.1. Установка пакетов для CMS "Dotplant2"  
 
 
 
