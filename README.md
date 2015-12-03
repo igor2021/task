@@ -302,8 +302,6 @@ $ php ../composer.phar global require "fxp/composer-asset-plugin:~1.0"
 # php ../composer.phar install --prefer-dist --optimize-autoloader
 ```
 
-При запросе `Token (hidden):` вводим: `7c9d3e2ffd1694e9a4cc857e4e7c7a74bb2eb0d5`.
-
 Проверяем тербования:
 
 ```
@@ -343,26 +341,23 @@ server {
 }
 ```
 
-Но это может быть не верно, т.к. весь контроль у нас происходить через `Vesta Control panel`. Поэтому будем править конфигурационные файлы в самой `Vesta`:
-
+Но это может не сработать, т.к. контроль так же у нас происходить через `Vesta Control panel`. Поэтому будем править конфигурационные файлы в самой `Vesta`:
 
 ```
 $ sudo rm /etc/nginx/conf.d/188.166.17.183.conf
 $ sudo cp /home/admin/conf/web/nginx.conf /home/admin/conf/web/nginx.conf.src
 $ sudo vi /home/admin/conf/web/nginx.conf
 
-......
+server {
+    listen 188.166.17.183:80 default;
+
+    root /home/admin/web/youfhe.ru/public_html/dotplant2/application/web;
+    index index.php;
+
+    server_name youfhe.ru www.youfhe.ru;
 
     location / {
-        proxy_pass      http://10.18.0.6:8080;
-        location ~* ^.+\.(jpg|jpeg|gif|png|ico|svg|css|zip|tgz|gz|rar|bz2|doc|xls|exe|pdf|ppt|txt|odt|ods|odp|odf|tar|wav|bmp|rtf|js|mp3|avi|mpeg|flv|html|htm)$ {
-            root           /home/admin/web/h01.mylinker.ru/public_html/dotplant2/application/web;
-            access_log     /var/log/apache2/domains/h01.mylinker.ru.log combined;
-            access_log     /var/log/apache2/domains/h01.mylinker.ru.bytes bytes;
-            expires        max;
-            try_files      $uri $uri/ /index.php?$args;
-            index          index.php;
-        }
+        try_files $uri $uri/ /index.php?$args;
     }
 
     location ~ \.php$ {
@@ -372,15 +367,11 @@ $ sudo vi /home/admin/conf/web/nginx.conf
         fastcgi_index index.php;
         include fastcgi_params;
     }
-    
 
     location ~ /\.ht {
        deny all;
     }
-
-......
-
-	#location ~ /\.ht    {return 404;}
+}
 
 ```
 
