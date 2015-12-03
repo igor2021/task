@@ -227,7 +227,7 @@ DB_SYSTEM='mysql,pgsql'
 # v-add-user production <password> <email> 
 ```
 
-Пропишем пользователя в sudo:
+Пропишем пользователя `production` в sudo:
 
 ```
 # visudo
@@ -248,8 +248,18 @@ production 	ALL=(ALL) 	ALL
 
 
 ```
-sudo apt-get install  nginx php5-fpm php5-gd php5-json mysql-server php5-mysql php5-cli php5-memcached memcached php5-curl php5-intl git
+sudo apt-get install  nginx php5-fpm php5-gd php5-json mysql-server php5-mysql /
+	 php5-cli php5-memcached memcached php5-curl php5-intl git
 ```
+
+```
+# mysql -u root -p
+CREATE DATABASE dotplant2 DEFAULT CHARACTER SET utf8 COLLATE utf8_general_ci;
+CREATE USER 'dotplant2'@'localhost' IDENTIFIED BY '<password>';
+GRANT ALL PRIVILEGES ON dotplant2.* TO 'dotplant2'@'localhost';
+FLUSH PRIVILEGES;
+```
+
 
 
 
