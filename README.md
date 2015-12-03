@@ -145,7 +145,7 @@ postgresql: unrecognized service
 # dpkg -s postgresql | grep Status
 ```
 
-Предварительно также читаем: `http://vestacp.com/docs/` (How to set up PostgreSQL on a Debian or Ubuntu).
+Предварительно также читаем: [http://vestacp.com/docs/](http://vestacp.com/docs/) (How to set up PostgreSQL on a Debian or Ubuntu).
 
 Установим пакет `postgresql`:
 
@@ -212,7 +212,7 @@ DB_SYSTEM='mysql,pgsql'
 ```
 
 Но необходимо также учесть чтобы пользователи отображались в "Vesta Control panel". 
-Плоэтому читаем http://vestacp.com/docs/ (How to set up PostgreSQL on a Debian or Ubuntu).Или добавляем пользователей через саму панель.
+Поэтому читаем API [https://vestacp.com/docs/api/#add_user](ttps://vestacp.com/docs/api/#add_user). Или добавляем пользователей через саму панель.
 
 # 3.1. Установка необходимых пакетов для CMS "Dotplant2"  
 
