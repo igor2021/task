@@ -270,6 +270,12 @@ $ php ../composer.phar global require "fxp/composer-asset-plugin:~1.0"
 
 При запросе `Token (hidden):` вводим: `7c9d3e2ffd1694e9a4cc857e4e7c7a74bb2eb0d5`.
 
+Проверяем тербования:
+
+```
+$ php requirements.php
+```
+
 Правим файл конфигурации для хоста `nginx`:
 
 ```
@@ -279,7 +285,7 @@ $ sudo vi /etc/nginx/conf.d/188.166.17.183.conf
 server {
     listen 188.166.17.183:80 default;
 
-    root /home/production/web/dotplant2/application/web;
+    root /home/admin/web/youfhe.ru/public_html/dotplant2/application/web;
     index index.php;
 
     server_name _;
