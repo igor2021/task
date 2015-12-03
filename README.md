@@ -295,6 +295,8 @@ GRANT ALL PRIVILEGES ON dotplant2.* TO 'dotplant2'@'localhost';
 FLUSH PRIVILEGES;
 ```
 
+Склонируем гит репозиторий и обновим зависимости:
+
 ```
 $ cd ~/web/youfhe.ru/public_html
 $ git clone https://github.com/DevGroup-ru/dotplant2.git
@@ -343,6 +345,27 @@ server {
     }
 }
 ```
+
+Отредактируем конфигурацию PHP-fpm:
+
+```
+$ sudo vi /etc/php5/fpm/php.ini
+cgi.fix_pathinfo = 1
+```
+
+Перезагрузим службы `nginx` и `php5-fpm`:
+
+```
+$ sudo service nginx restart
+$ sudo service php5-fpm restart
+```
+
+Установим базовые настройки CMS:
+
+```
+./installer
+```
+
 
 
 
