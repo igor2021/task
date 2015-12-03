@@ -244,7 +244,7 @@ production 	ALL=(ALL) 	ALL
 # 3.1. Установка CMS "Dotplant2"
 
 Вся установка будет производится от пользователя `admin`. 
-Доументация по установке `http://docs.dotplant.ru/ru/setup-example.html` 
+Доументация по установке [http://docs.dotplant.ru/ru/setup-example.html](http://docs.dotplant.ru/ru/setup-example.html) 
 
 
 ```
@@ -269,6 +269,8 @@ $ php ../composer.phar global require "fxp/composer-asset-plugin:~1.0"
 ```
 
 При запросе `Token (hidden):` вводим: `7c9d3e2ffd1694e9a4cc857e4e7c7a74bb2eb0d5`.
+
+Правим файл конфигурации для хоста `nginx`:
 
 ```
 $ sudo mkdir /etc/nginx/conf.d.src
