@@ -159,7 +159,7 @@ Setting up phppgadmin (5.1-1) ...
 Видим, что `phppgadmin` спрашивает `Apache2`. Поэтому включим эту службу (см. п. 1.1).
 
 ```
-# cp /etc/postgresql/9.3/main/pg_hba.conf /etc/postgresql/9.3/main/pg_hba.conf.src
+# cp /etc/postgresql/*/main/pg_hba.conf /etc/postgresql/*/main/pg_hba.conf.src
 # wget http://c.vestacp.com/0.9.8/debian/pg_hba.conf -O /etc/postgresql/*/main/pg_hba.conf
 ```
 
@@ -169,8 +169,8 @@ Setting up phppgadmin (5.1-1) ...
 
 ```
 # su - postgres
-> psql -c "ALTER USER postgres WITH PASSWORD '<password>'"
-> exit
+psql -c "ALTER USER postgres WITH PASSWORD '<password>'"
+exit
 ```
 
 ```
@@ -179,6 +179,21 @@ Setting up phppgadmin (5.1-1) ...
 DB_SYSTEM='mysql,pgsql'
 ```
 
+```
+# v-add-database-host pgsql localhost postgres <password>
+```
+
+```
+# cp /etc/phppgadmin/config.inc.php /etc/phppgadmin/config.inc.php.src
+# wget http://c.vestacp.com/0.9.8/debian/pga.conf -O /etc/phppgadmin/config.inc.php
+# mkdir /etc/apache2/conf.d.src
+# cp /etc/apache2/conf.d/phppgadmin /etc/apache2/conf.d.src/phppgadmin
+# wget http://c.vestacp.com/0.9.8/debian/apache2-pga.conf -O /etc/apache2/conf.d/phppgadmin
+```
+
+```
+# service apache2 restart
+```
 
 
 
@@ -195,6 +210,9 @@ DB_SYSTEM='mysql,pgsql'
 # passwd ecom
 	password: <password>
 ```
+
+Но необходимо также учесть чтобы пользователи отображались в "Vesta Control panel". 
+Плоэтому читаем http://vestacp.com/docs/ (How to set up PostgreSQL on a Debian or Ubuntu).Или добавляем пользователей через саму панель.
 
 # 3.1. Установка необходимых пакетов для CMS "Dotplant2"  
 
