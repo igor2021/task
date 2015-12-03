@@ -203,16 +203,24 @@ DB_SYSTEM='mysql,pgsql'
 
 
 ```
-# adduser ecom
+# adduser <username>
 ```
 
 ```
-# passwd ecom
+# passwd <username>
 	password: <password>
 ```
 
 Но необходимо также учесть чтобы пользователи отображались в "Vesta Control panel". 
-Поэтому читаем API [https://vestacp.com/docs/api/#add_user](ttps://vestacp.com/docs/api/#add_user). Или добавляем пользователей через саму панель.
+Лучший вариант добавить пользователей через саму панель. Но остается вопрос как это сделать, если пользователь уже существуе?
+
+Добавим пользователья командой:
+
+```
+# v-add-user production <password> <email> 
+```
+
+
 
 # 3.1. Установка необходимых пакетов для CMS "Dotplant2"  
 
