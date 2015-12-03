@@ -195,6 +195,13 @@ DB_SYSTEM='mysql,pgsql'
 # service apache2 restart
 ```
 
+# 1.4. MySQL
+
+Изменим пароль (данный по умолчанию) для пользователя `root`:
+
+```
+/bin/mysqladmin -u root password '<password>'
+```
 
 
 # 2. Создание пользователя
@@ -229,7 +236,7 @@ DB_SYSTEM='mysql,pgsql'
 
 # User privilege specification
 root 		ALL=(ALL:ALL) 	ALL
-**production 	ALL=(ALL) 	ALL** 
+production 	ALL=(ALL) 	ALL 
 ```
 
 
@@ -240,4 +247,9 @@ root 		ALL=(ALL:ALL) 	ALL
 Доументация по установке `http://docs.dotplant.ru/ru/setup-example.html` 
 
 
- 
+```
+sudo apt-get install  nginx php5-fpm php5-gd php5-json mysql-server php5-mysql php5-cli php5-memcached memcached php5-curl php5-intl git
+```
+
+
+
