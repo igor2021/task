@@ -248,8 +248,43 @@ production 	ALL=(ALL) 	ALL
 
 
 ```
-$ sudo apt-get install  nginx php5-fpm php5-gd php5-json mysql-server php5-mysql /
+$ sudo apt-get install nginx php5-fpm php5-gd php5-json mysql-server php5-mysql /
 	 php5-cli php5-memcached memcached php5-curl php5-intl git
+```
+
+```
+$ sudo apt-cache search php5 imagick
+$ sudo apt-get install php5-imagick
+$ sudo apt-cache search php5 apc
+$ sudo apt-get install php5-apcu
+```
+
+```
+$ cp /etc/php5/fpm/php.ini /etc/php5/fpm/php.ini.src
+$ sudo vi /etc/php5/fpm/php.ini
+date.timezone = 'Europe/Moscow'
+expose_php = Off
+```
+
+```
+$ cp /etc/php5/apache2/php.ini /etc/php5/apache2/php.ini.src
+$ sudo vi /etc/php5/apache2/php.ini
+date.timezone = 'Europe/Moscow'
+expose_php = Off
+```
+
+```
+$ cp /etc/php5/cli/php.ini /etc/php5/cli/php.ini.src
+$ sudo vi /etc/php5/cli/php.ini
+date.timezone = 'Europe/Moscow'
+expose_php = Off
+```
+
+```
+$ cp /etc/php5/cgi/php.ini /etc/php5/cgi/php.ini.src
+$ sudo vi /etc/php5/cgi/php.ini
+date.timezone = 'Europe/Moscow'
+expose_php = Off
 ```
 
 ```
