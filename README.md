@@ -206,9 +206,6 @@ $ service apache2 restart
 
 # 2. Создание пользователя
 
-Создадим нового пользователя в каталоге которого разместим CMS "Dotplant2".
-
-
 ```
 $ adduser <username>
 ```
@@ -319,6 +316,7 @@ $ php requirements.php
 $ sudo mkdir /etc/nginx/conf.d.src
 $ sudo cp /etc/nginx/conf.d/188.166.17.183.conf /etc/nginx/conf.d.src/188.166.17.183.conf 
 $ sudo vi /etc/nginx/conf.d/188.166.17.183.conf 
+
 server {
     listen 188.166.17.183:80 default;
 
@@ -328,7 +326,6 @@ server {
     server_name _;
 
     location / {
-    	proxy_pass  http://188.166.17.183:8080;
         try_files $uri $uri/ /index.php?$args;
     }
 
@@ -346,7 +343,53 @@ server {
 }
 ```
 
-Отредактируем конфигурацию PHP-fpm:
+Но это может быть не верно, т.к. весь контроль у нас происходить через `Vesta Control panel`. Поэтому будем править конфигурационные файлы в самой `Vesta`:
+
+
+```
+$ sudo rm /etc/nginx/conf.d/188.166.17.183.conf
+$ sudo cp /home/admin/conf/web/nginx.conf /home/admin/conf/web/nginx.conf.src
+$ sudo vi /home/admin/conf/web/nginx.conf
+
+......
+
+    location / {
+        proxy_pass      http://10.18.0.6:8080;
+        location ~* ^.+\.(jpg|jpeg|gif|png|ico|svg|css|zip|tgz|gz|rar|bz2|doc|xls|exe|pdf|ppt|txt|odt|ods|odp|odf|tar|wav|bmp|rtf|js|mp3|avi|mpeg|flv|html|htm)$ {
+            root           /home/admin/web/h01.mylinker.ru/public_html/dotplant2/application/web;
+            access_log     /var/log/apache2/domains/h01.mylinker.ru.log combined;
+            access_log     /var/log/apache2/domains/h01.mylinker.ru.bytes bytes;
+            expires        max;
+            try_files      $uri $uri/ /index.php?$args;
+            index          index.php;
+        }
+    }
+
+    location ~ \.php$ {
+        try_files $uri =404;
+        fastcgi_split_path_info ^(.+\.php)(/.+)$;
+        fastcgi_pass unix:/var/run/php5-fpm.sock;
+        fastcgi_index index.php;
+        include fastcgi_params;
+    }
+    
+
+    location ~ /\.ht {
+       deny all;
+    }
+
+......
+
+	#location ~ /\.ht    {return 404;}
+
+```
+
+
+$ mkdir /etc/nginx/conf.d.src
+$ sudo cp /etc/nginx/conf.d/188.166.17.183.conf /etc/nginx/conf.d.src/188.166.17.183.conf 
+
+
+Отредактируем конфигурацию `PHP-fpm`:
 
 ```
 $ sudo vi /etc/php5/fpm/php.ini
