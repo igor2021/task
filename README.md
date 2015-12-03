@@ -90,7 +90,7 @@ tar -xvf youfh_19_05_afternoon.tar.gz -C /var/www/archive/
 # sysv-rc-conf apache2 on
 ```
 
-PS. Также можно посмотреть какие службы установлены по ссылке: https://188.166.17.183:8083/list/server/
+PS. Также можно посмотреть какие службы установлены по ссылке: https://188.166.17.183:8083/list/server/ (т.е. службы присоединеные к "Vesta Control panel").
 
 # 1.2. Обзор Nginx
 
