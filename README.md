@@ -173,6 +173,13 @@ Setting up phppgadmin (5.1-1) ...
 > exit
 ```
 
+```
+# vi /usr/local/vesta/conf/vesta.conf
+...
+DB_SYSTEM='mysql,pgsql'
+```
+
+
 
 
 # 2. Создание пользователя
