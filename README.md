@@ -243,7 +243,7 @@ production 	ALL=(ALL) 	ALL
 
 # 3.1. Установка CMS "Dotplant2"
 
-Вся установка будет производится от пользователя `production`. 
+Вся установка будет производится от пользователя `admin`. 
 Доументация по установке `http://docs.dotplant.ru/ru/setup-example.html` 
 
 
@@ -261,7 +261,44 @@ FLUSH PRIVILEGES;
 ```
 
 ```
+$ cd ~/web/youfhe.ru/public_html
+$ git clone https://github.com/DevGroup-ru/dotplant2.git
+$ cd dotplant2/application
+$ php ../composer.phar global require "fxp/composer-asset-plugin:~1.0"
+# php ../composer.phar install --prefer-dist --optimize-autoloader
+```
+
+При запросе `Token (hidden):` вводим: `7c9d3e2ffd1694e9a4cc857e4e7c7a74bb2eb0d5`.
+
+```
+$ sudo mkdir /etc/nginx/conf.d.src
+$ sudo cp /etc/nginx/conf.d/188.166.17.183.conf /etc/nginx/conf.d.src/188.166.17.183.conf 
 $ sudo vi /etc/nginx/conf.d/188.166.17.183.conf 
+server {
+    listen 188.166.17.183:80 default;
+
+    root /home/production/web/dotplant2/application/web;
+    index index.php;
+
+    server_name _;
+
+    location / {
+    	proxy_pass  http://188.166.17.183:8080;
+        try_files $uri $uri/ /index.php?$args;
+    }
+
+    location ~ \.php$ {
+        try_files $uri =404;
+        fastcgi_split_path_info ^(.+\.php)(/.+)$;
+        fastcgi_pass unix:/var/run/php5-fpm.sock;
+        fastcgi_index index.php;
+        include fastcgi_params;
+    }
+
+    location ~ /\.ht {
+       deny all;
+    }
+}
 ```
 
 
