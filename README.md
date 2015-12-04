@@ -1,10 +1,11 @@
 
+# Хост на Ubuntu
 
-# DotPlant2
+## DotPlant2
 
 Документация: [http://docs.dotplant.ru/ru/setup-example.html](http://docs.dotplant.ru/ru/setup-example.html)
 
-Обновляем пакеты и устанавливаем необходимые пакеты:
+###### Обновляем пакеты и устанавливаем необходимые пакеты:
 
 ```
 $ sudo apt-get update
@@ -16,17 +17,18 @@ $ apt-get install nginx php5-fpm php5-gd php5-json mysql-server php5-mysql php5-
 	php5-memcached memcached php5-curl php5-intl git
 ```
 
-Создадим базу:
+
+###### Создадим базу MySQL:
 
 ```
-$ mysql -u root -p
+# mysql -u root -p
 CREATE DATABASE dotplant2 DEFAULT CHARACTER SET utf8 COLLATE utf8_general_ci;
 CREATE USER 'dotplant2'@'localhost' IDENTIFIED BY '<password>';
 GRANT ALL PRIVILEGES ON dotplant2.* TO 'dotplant2'@'localhost';
 FLUSH PRIVILEGES;
 ```
 
-Склонируем гит репозиторий и обновим зависимости:
+###### Склонируем гит репозиторий и обновим зависимости:
 
 ```
 $ cd ~/web/youfhe.ru/public_html
@@ -36,13 +38,13 @@ $ php ../composer.phar global require "fxp/composer-asset-plugin:~1.0"
 # php ../composer.phar install --prefer-dist --optimize-autoloader
 ```
 
-Проверяем тербования:
+###### Проверяем тербования:
 
 ```
 $ php requirements.php
 ```
 
-Устанавливаем недостающие пакеты, правим файлы настроек:
+###### Устанавливаем недостающие пакеты, правим файлы настроек:
 
 ```
 $ sudo apt-cache search php5 imagick
@@ -78,8 +80,6 @@ $ sudo vi /etc/php5/cgi/php.ini
 date.timezone = 'Europe/Moscow'
 expose_php = Off
 ```
-
-
 
 Настройка `nginx`:
 
@@ -118,13 +118,42 @@ $ sudo service nginx restart
 $ sudo service php5-fpm restart
 ```
 
-Установка базовых настроек CMS:
+###### Установка базовых настроек CMS:
 
 ```
 $ ./installer
 ```
 
-# Composer
+## Правки по DotPlant2
+
+###### Cоздание новой базы MySQL, дамп и востанновление из дампа, удаление старой базы:
+
+```
+$ mysql -u root -p
+CREATE DATABASE youfh DEFAULT CHARACTER SET utf8 COLLATE utf8_general_ci;
+CREATE USER 'youfh'@'localhost' IDENTIFIED BY '<password>';
+GRANT ALL PRIVILEGES ON youfh.* TO 'youfh'@'localhost';
+FLUSH PRIVILEGES;
+```
+
+```
+$ mysqldump -u root -p dotplant2 > /home/admin/tmp/dotplant2.sql 
+$ mysql -u root -p youfh < /home/admin/tmp/dotplant2.sql 
+```
+
+```
+$ mysql -u root -p
+$ DROP DATABASE `dotplant2`;
+```
+
+Также правим в настройках DotPlant2 `./config/db-local.php`.
+```
+
+
+
+
+
+## Composer
 
 ```
 $ curl -sS https://getcomposer.org/installer | php
@@ -132,14 +161,14 @@ $ sudo mv composer.phar /usr/local/bin/composer
 $ composer -V
 ```
 
-# Git
+## Git
 
 ```
 $ dpkg -s git | grep Status
 $ sudo apt-get install git
 ```
 
-# PostgerSQL
+## PostgerSQL
 
 ```
 $ dpkg -s postgresql | grep Status
@@ -192,15 +221,16 @@ $ service apache2 restart
 
 
 
-# Node npm
+## Node npm
 
 ```
 $ dpkg -s nodejs | grep Status
 $ sudo apt-cache search nodejs npm
 $ sudo apt-get install npm
+$ npm -v
 ```
 
-# Redis
+## Redis
 
 TODO
 
