@@ -147,10 +147,6 @@ $ DROP DATABASE `dotplant2`;
 ```
 
 Также правим в настройках DotPlant2 `./config/db-local.php`.
-```
-
-
-
 
 
 ## Composer
