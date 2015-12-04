@@ -12,9 +12,10 @@ $ apt-get install  nginx php5-fpm php5-gd php5-json mysql-server php5-mysql php5
 	php5-memcached memcached php5-curl php5-intl git
 ```
 
-Настройка `/etc/nginx/conf.d/188.166.17.183.conf`:
+Настройка `nginx`:
 
 ```
+$ vi /etc/nginx/conf.d/188.166.17.183.conf
 server {
     listen 188.166.17.183:80 default;
 
