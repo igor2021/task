@@ -3,7 +3,7 @@
 
 ## DotPlant2
 
-Документация: [http://docs.dotplant.ru/ru/setup-example.html](http://docs.dotplant.ru/ru/setup-example.html)
+Документация по "DotPlant2": <http://docs.dotplant.ru/ru/setup-example.html>
 
 ###### Обновляем пакеты и устанавливаем необходимые пакеты:
 
@@ -81,30 +81,34 @@ date.timezone = 'Europe/Moscow'
 expose_php = Off
 ```
 
-Настройка `nginx`:
+
+###### Настройка Nginx
 
 ```
 $ sudo vi /etc/nginx/conf.d/188.166.17.183.conf
 server {
     listen 188.166.17.183:80 default;
+	
+	server_name youfhe.ru www.youfhe.ru;
 
     root /home/admin/web/youfhe.ru/public_html/dotplant2/application/web;
     index index.php;
 
-    server_name youfhe.ru www.youfhe.ru;
+    access_log  /var/log/nginx/domains/youfhe.ru.log combined;
+    access_log  /var/log/nginx/domains/youfhe.ru.bytes bytes;
+    error_log   /var/log/nginx/domains/youfhe.ru.error.log error;
 
     location / {    
         try_files $uri $uri/ /index.php?$args;
     }
 
     location ~ \.php$ {
-    #root /home/admin/web/youfhe.ru/public_html/dotplant2/application/web;
         try_files $uri =404;
         fastcgi_split_path_info ^(.+\.php)(/.+)$;
         fastcgi_pass unix:/var/run/php5-fpm.sock;
-        #fastcgi_index index.php;    
+        fastcgi_index index.php;    
         include fastcgi_params;
-        fastcgi_param  SCRIPT_FILENAME  $document_root$fastcgi_script_name;  
+        <b color="red">fastcgi_param  SCRIPT_FILENAME  $document_root$fastcgi_script_name;<b>  
     }
 
     location ~ /\.ht {
@@ -117,6 +121,10 @@ server {
 $ sudo service nginx restart
 $ sudo service php5-fpm restart
 ```
+
+
+<b color="red">PS.</b> `Vesta` по умолчанию читает логи `apache2`. Вопрос (или я чего-то незнаю): а какже вывести их через `Vesta`?
+
 
 ###### Установка базовых настроек CMS:
 
@@ -176,7 +184,10 @@ $ service apache2 start
 $ sudo apt-get install postgresql postgresql-contrib phppgadmin
 ```
 
-Документация по установке в "VESTA":  [http://vestacp.com/docs/](http://vestacp.com/docs/) (How to set up PostgreSQL on a Debian or Ubuntu).
+
+###### Интеграция с VESTA
+
+Документация по установке в "VESTA":  <http://vestacp.com/docs/> (How to set up PostgreSQL on a Debian or Ubuntu).
 
 ```
 $ sudo cp /etc/postgresql/*/main/pg_hba.conf /etc/postgresql/*/main/pg_hba.conf.src
@@ -215,6 +226,19 @@ $ wget http://c.vestacp.com/0.9.8/debian/apache2-pga.conf -O /etc/apache2/conf.d
 $ service apache2 restart
 ```
 
+## sysv-rc-conf
+
+Пакет для управления автозагрузкой служб.
+
+```
+$ sudo apt-get install sysv-rc-conf
+```
+
+Проверить режимы автозагрузки можно командой:
+
+```
+$ sysv-rc-conf --list
+```
 
 
 ## Node npm
@@ -223,12 +247,50 @@ $ service apache2 restart
 $ dpkg -s nodejs | grep Status
 $ sudo apt-cache search nodejs npm
 $ sudo apt-get install npm
+$ nodejs -v
 $ npm -v
 ```
 
-## Redis
+## Redis, redis-desktop-manager
 
-TODO
+
+###### redis
+
+Документация по service redis:
+
+  * http://softtime.info/view/Redis
+  
+
+```
+$ dpkg -s redis | grep Status
+$ sudo apt-cache search redis
+$ sudo apt-get install redis-server
+```
+
+```
+$ sudo service redis-server status
+$ sudo service redis-server start
+$ sysv-rc-conf --list redis-server
+```
+
+
+
+
+###### redis-desktop-manager
+
+Документация по "RedisDesktopManager": <https://github.com/uglide/RedisDesktopManager/wiki>  
+**Лучше менеджер установить на удаленной машине и подлючаться по SSH.**
+
+```
+$ cd ~/tmp
+$ wget https://github.com/uglide/RedisDesktopManager/releases/download/0.8.3/redis-desktop-manager_0.8.3-120_amd64.deb
+$ 
+```
+
+Документация о том как собрать из исходников: <https://github.com/uglide/RedisDesktopManager/wiki/Build-from-source>
+
+
+
 
 
 
