@@ -120,17 +120,25 @@ server {
 
 ###### Настройка Nginx в Vesta
 
-Нам нужно чтобы конфиги лежали внутри `Vesta`.
+Нам также нужно чтобы конфиги лежали внутри `Vesta`.
 
 ```
-$ touch /home/admin/conf/web/nginx.youfhe.ru.conf
+$ su
+$ mkdir /home/admin/conf/web/nginx.conf.d
+$ touch /home/admin/conf/web/nginx.conf.d/youfhe.ru.conf
 ```
 
 ```
-$ vi /home/admin/conf/web/nginx.youfhe.ru.conf
+$ vi /home/admin/conf/web/nginx.conf
+include /home/admin/conf/web/nginx.conf.d/*.conf;
+......
+```
+
+```
+$ vi /home/admin/conf/web/nginx.conf.d/youfhe.ru.conf
 server {
     listen 188.166.17.183:80 default;
-    server_name youfhe.ru www.youfhe.ru;
+	server_name youfhe.ru www.youfhe.ru;
 
     root /home/admin/web/youfhe.ru/public_html/dotplant2/application/web;
     index index.php;
@@ -143,50 +151,28 @@ server {
     access_log  /var/log/apache2/domains/youfhe.ru.bytes bytes;
     error_log   /var/log/apache2/domains/youfhe.ru.error.log error;
 
-    location / {
+    location / {    
         try_files $uri $uri/ /index.php?$args;
-
-        location ~* ^.+\.(jpeg|jpg|png|gif|bmp|ico|svg|css|js)$ {
-            expires max;
-        }
-
-        location ~ \.php$ {
-            try_files $uri =404;
-            fastcgi_split_path_info ^(.+\.php)(/.+)$;
-            fastcgi_pass unix:/var/run/php5-fpm.sock;
-            fastcgi_index index.php;    
-            include fastcgi_params;
-            fastcgi_param  SCRIPT_FILENAME  $document_root$fastcgi_script_name;
-        }
-
-        location ~ /\.ht {
-            deny all;
-        }
-   }
-
-    error_page  403 /error/404.html;
-    error_page  404 /error/404.html;
-    error_page  500 502 503 504 /error/50x.html;
-
-    location /error/ {
-        alias   /home/admin/web/youfhe.ru/document_errors/;
     }
-    
-    location ~* "/\.(htaccess|htpasswd)$" {
-        deny    all;
-        return  404;
+
+    location ~ \.php$ {
+        try_files $uri =404;
+        fastcgi_split_path_info ^(.+\.php)(/.+)$;
+        fastcgi_pass unix:/var/run/php5-fpm.sock;
+        fastcgi_index index.php;    
+        include fastcgi_params;
+        fastcgi_param  SCRIPT_FILENAME  $document_root$fastcgi_script_name;
+    }
+
+    location ~ /\.ht {
+       deny all;
     }
 }
 ```
 
 ```
-$ vi /home/admin/conf/web/nginx.conf
-include /home/admin/conf/web/nginx.youfhe.ru.conf;
-......
-```
-
-```
-$ chown root.admin /home/admin/conf/web/nginx.youfhe.ru.conf
+$ chown root.admin /home/admin/conf/web/nginx.conf.d
+$ chown root.admin /home/admin/conf/web/nginx.conf.d/*
 ```
 
 Удалим предыдущий файл конфигурации:
@@ -201,8 +187,6 @@ $ sudo rm /etc/nginx/conf.d/188.166.17.183.conf
 $ sudo service nginx restart
 $ sudo service php5-fpm restart
 ```
-
-**TODO**: Убедится что файл конфигурации `nginx.youfhe.ru.conf` попадает в backup.
 
 ###### Установка базовых настроек CMS:
 
@@ -497,10 +481,6 @@ $ crontab -e
 * /usr/local/vesta/conf/mysql.conf
 
 
-## Ограничение доступа по SSH
 
-Это последнее что надо сдлетать. Но сначало надо убедится что все сделано как надо.
-
-**TODO** 
 
 
