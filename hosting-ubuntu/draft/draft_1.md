@@ -43,7 +43,7 @@ tar -xvf youfh_19_05_afternoon.tar.gz -C /var/www/archive/
 
 # 1.1. Проверка установки nginx
 
-Есть подозрение что `nginx` уже установлен или установлен какой-то и из веб-серверов (т.к. имеем возможность открывать ссылку: https://<host_or_ip>:8083). Проверим это:
+Есть подозрение что `nginx` уже установлен или установлен какой-то и из веб-серверов (т.к. имеем возможность открывать ссылку: https://188.166.17.183:8083). Проверим это:
 
 ```
 $ service nginx status
@@ -90,13 +90,13 @@ $ sysv-rc-conf --list
 $ sysv-rc-conf apache2 on
 ```
 
-PS. Также можно посмотреть какие службы установлены по ссылке: https://<host_or_ip>:8083/list/server/ (т.е. службы присоединеные к "Vesta Control panel").
+PS. Также можно посмотреть какие службы установлены по ссылке: https://188.166.17.183:8083/list/server/ (т.е. службы присоединеные к "Vesta Control panel").
 
 # 1.2. Обзор Nginx
 
 * Заметка
   * Основные настройки `nginx` хранятся в файле `/etc/nginx/nginx.conf`.
-  * Настройки сайта (по ip: <host_or_ip>), храняться в файле `/etc/nginx/conf.d/188.166.17.183.conf`.
+  * Настройки сайта (по ip: 188.166.17.183), храняться в файле `/etc/nginx/conf.d/188.166.17.183.conf`.
   * Настройки для "Vesta Control panel", хранятся в файле `/etc/nginx/conf.d/vesta.conf`.
   
 Но возникает вопрос? Где же прописан порт `8083`. Попробуем это найти:
@@ -312,11 +312,11 @@ $ php requirements.php
 
 ```
 $ sudo mkdir /etc/nginx/conf.d.src
-$ sudo cp /etc/nginx/conf.d/<host_or_ip>.conf /etc/nginx/conf.d.src/<host_or_ip>.conf 
-$ sudo vi /etc/nginx/conf.d/<host_or_ip>.conf 
+$ sudo cp /etc/nginx/conf.d/188.166.17.183.conf /etc/nginx/conf.d.src/188.166.17.183.conf 
+$ sudo vi /etc/nginx/conf.d/188.166.17.183.conf 
 
 server {
-    listen <host_or_ip>:80 default;
+    listen 188.166.17.183:80 default;
 
     root /home/admin/web/youfhe.ru/public_html/dotplant2/application/web;
     index index.php;
@@ -344,12 +344,12 @@ server {
 Но это может не сработать, т.к. контроль так же у нас происходить через `Vesta Control panel`. Поэтому будем править конфигурационные файлы в самой `Vesta`:
 
 ```
-$ sudo rm /etc/nginx/conf.d/<host_or_ip>.conf
+$ sudo rm /etc/nginx/conf.d/188.166.17.183.conf
 $ sudo cp /home/admin/conf/web/nginx.conf /home/admin/conf/web/nginx.conf.src
 $ sudo vi /home/admin/conf/web/nginx.conf
 
 server {
-    listen <host_or_ip>:80 default;
+    listen 188.166.17.183:80 default;
 
     root /home/admin/web/youfhe.ru/public_html/dotplant2/application/web;
     index index.php;
@@ -377,7 +377,7 @@ server {
 
 
 $ mkdir /etc/nginx/conf.d.src
-$ sudo cp /etc/nginx/conf.d/<host_or_ip>.conf /etc/nginx/conf.d.src/<host_or_ip>.conf 
+$ sudo cp /etc/nginx/conf.d/188.166.17.183.conf /etc/nginx/conf.d.src/188.166.17.183.conf 
 
 
 Отредактируем конфигурацию `PHP-fpm`:
@@ -434,7 +434,7 @@ touch /etc/php5/fpm/pool.d/www_nginx.conf
 php_admin_value[cgi.fix_pathinfo]=0
 
 server {
-    listen <host_or_ip>:80 default;
+    listen 188.166.17.183:80 default;
 
     root /home/admin/web/youfhe.ru/public_html/dotplant2/application/web;
     index index.php;

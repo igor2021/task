@@ -82,13 +82,13 @@ expose_php = Off
 
 ```
 $ sudo mkdir /etc/nginx/conf.d.src
-$ sudo cp /etc/nginx/conf.d/<host_or_ip>.conf /etc/nginx/conf.d.src/<host_or_ip>.conf 
+$ sudo cp /etc/nginx/conf.d/188.166.17.183.conf /etc/nginx/conf.d.src/188.166.17.183.conf 
 ```
 
 ```
-$ sudo vi /etc/nginx/conf.d/<host_or_ip>.conf
+$ sudo vi /etc/nginx/conf.d/188.166.17.183.conf
 server {
-    listen <host_or_ip>:80 default;
+    listen 188.166.17.183:80 default;
 	
 	server_name youfhe.ru www.youfhe.ru;
 
@@ -120,17 +120,25 @@ server {
 
 ###### Настройка Nginx в Vesta
 
-Нам нужно чтобы конфиги лежали внутри `Vesta`.
+Нам также нужно чтобы конфиги лежали внутри `Vesta`.
 
 ```
-$ touch /home/admin/conf/web/nginx.youfhe.ru.conf
+$ su
+$ mkdir /home/admin/conf/web/nginx.conf.d
+$ touch /home/admin/conf/web/nginx.conf.d/youfhe.ru.conf
 ```
 
 ```
-$ vi /home/admin/conf/web/nginx.youfhe.ru.conf
+$ vi /home/admin/conf/web/nginx.conf
+include /home/admin/conf/web/nginx.conf.d/*.conf;
+......
+```
+
+```
+$ vi /home/admin/conf/web/nginx.conf.d/youfhe.ru.conf
 server {
-    listen <host_or_ip>:80 default;
-    server_name youfhe.ru;
+    listen 188.166.17.183:80 default;
+	server_name youfhe.ru www.youfhe.ru;
 
     root /home/admin/web/youfhe.ru/public_html/dotplant2/application/web;
     index index.php;
@@ -143,56 +151,34 @@ server {
     access_log  /var/log/apache2/domains/youfhe.ru.bytes bytes;
     error_log   /var/log/apache2/domains/youfhe.ru.error.log error;
 
-    location / {
+    location / {    
         try_files $uri $uri/ /index.php?$args;
-
-        location ~* ^.+\.(jpeg|jpg|png|gif|bmp|ico|svg|css|js)$ {
-            expires max;
-        }
-
-        location ~ \.php$ {
-            try_files $uri =404;
-            fastcgi_split_path_info ^(.+\.php)(/.+)$;
-            fastcgi_pass unix:/var/run/php5-fpm.sock;
-            fastcgi_index index.php;    
-            include fastcgi_params;
-            fastcgi_param  SCRIPT_FILENAME  $document_root$fastcgi_script_name;
-        }
-
-        location ~ /\.ht {
-            deny all;
-        }
-    } 
-    
-    error_page  403 /error/404.html;
-    error_page  404 /error/404.html;
-    error_page  500 502 503 504 /error/50x.html;
-
-    location /error/ {
-        alias   /home/admin/web/youfhe.ru/document_errors/;
     }
-    
-    location ~* "/\.(htaccess|htpasswd)$" {
-        deny    all;
-        return  404;
+
+    location ~ \.php$ {
+        try_files $uri =404;
+        fastcgi_split_path_info ^(.+\.php)(/.+)$;
+        fastcgi_pass unix:/var/run/php5-fpm.sock;
+        fastcgi_index index.php;    
+        include fastcgi_params;
+        fastcgi_param  SCRIPT_FILENAME  $document_root$fastcgi_script_name;
+    }
+
+    location ~ /\.ht {
+       deny all;
     }
 }
 ```
 
 ```
-$ vi /home/admin/conf/web/nginx.conf
-include /home/admin/conf/web/nginx.youfhe.ru.conf;
-......
-```
-
-```
-$ chown root.admin /home/admin/conf/web/nginx.youfhe.ru.conf
+$ chown root.admin /home/admin/conf/web/nginx.conf.d
+$ chown root.admin /home/admin/conf/web/nginx.conf.d/*
 ```
 
 Удалим предыдущий файл конфигурации:
 
 ```
-$ sudo rm /etc/nginx/conf.d/<host_or_ip>.conf
+$ sudo rm /etc/nginx/conf.d/188.166.17.183.conf
 ```
 
 Перзапустим службы
@@ -201,35 +187,6 @@ $ sudo rm /etc/nginx/conf.d/<host_or_ip>.conf
 $ sudo service nginx restart
 $ sudo service php5-fpm restart
 ```
-
-**TODO**: Убедится что файл конфигурации `nginx.youfhe.ru.conf` попадает в backup.
-
-
-###### Настройка редиректа Nginx
-
-Редирект с www на без www
-
-```
-$ sudo vi /etc/nginx/conf.d/redirect.conf
-server {
-     listen 80;
-     server_name  www.youfhe.ru;
-     rewrite ^ http://youfhe.ru$request_uri? permanent; 
-}
-```
-
-###### Настройка DNS-записи
-
-Информация взята с сайта: <http://www.8host.com/blog/redirekt-domena-s-www-na-bez-www-na-nginx-v-centos-7/>
-
-Чтобы настроить редирект с www.example.com на example.com (или наоборот), нужно создать запись для каждого имени.
-
-Откройте панель управления DNS.
-
-Если записи домена (также называется зоной) на данный момент не существует, создайте её сейчас. В hostname укажите доменное имя (к примеру, example.com), в поле IP address нужно указать внешний IP-адрес сервера Nginx. Некоторые системы создают запись A, которая указывает на заданный IP-адрес, автоматически, а некоторые требуют создавать такие записи вручную.
-
-Затем создайте еще одну запись А, на этот раз для адреса с префиксом www, указав тот же IP-адрес.
-
 
 ###### Установка базовых настроек CMS:
 
@@ -290,9 +247,6 @@ $ DROP DATABASE `youfh`;
 
 Добавим базу `admin_youfhe` через `VESTA`.
 
-## Отключить резервное копирование в VESTA.
-
-Заходим в задания cron и находим строку sudo /usr/local/vesta/bin/v-backup-users и переводим задание в статус SUSPEND.
 
 ## Apache
 
@@ -527,10 +481,6 @@ $ crontab -e
 * /usr/local/vesta/conf/mysql.conf
 
 
-## Ограничение доступа по SSH
 
-Это последнее что надо сдлетать. Но сначало надо убедится что все сделано как надо.
-
-**TODO** 
 
 

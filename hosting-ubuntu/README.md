@@ -3,7 +3,9 @@
 
 ## DotPlant2
 
-Документация по "DotPlant2": <http://docs.dotplant.ru/ru/setup-example.html>
+Документация по "DotPlant2": 
+* <http://docs.dotplant.ru/ru/setup-example.html>
+* <https://github.com/DevGroup-ru/dotplant2-docs>
 
 ###### Обновляем пакеты и устанавливаем необходимые пакеты:
 
@@ -78,116 +80,6 @@ $ sudo vi /etc/php5/cgi/php.ini
 expose_php = Off
 ```
 
-###### Настройка Nginx
-
-```
-$ sudo mkdir /etc/nginx/conf.d.src
-$ sudo cp /etc/nginx/conf.d/<host_or_ip>.conf /etc/nginx/conf.d.src/<host_or_ip>.conf 
-```
-
-```
-$ sudo vi /etc/nginx/conf.d/<host_or_ip>.conf
-server {
-    listen <host_or_ip>:80 default;
-	
-	server_name youfhe.ru www.youfhe.ru;
-
-    root /home/admin/web/youfhe.ru/public_html/dotplant2/application/web;
-    index index.php;
-
-    access_log  /var/log/nginx/domains/youfhe.ru.log combined;
-    access_log  /var/log/nginx/domains/youfhe.ru.bytes bytes;
-    error_log   /var/log/nginx/domains/youfhe.ru.error.log error;
-
-    location / {    
-        try_files $uri $uri/ /index.php?$args;
-    }
-
-    location ~ \.php$ {
-        try_files $uri =404;
-        fastcgi_split_path_info ^(.+\.php)(/.+)$;
-        fastcgi_pass unix:/var/run/php5-fpm.sock;
-        fastcgi_index index.php;    
-        include fastcgi_params;
-        fastcgi_param  SCRIPT_FILENAME  $document_root$fastcgi_script_name;
-    }
-
-    location ~ /\.ht {
-       deny all;
-    }
-}
-```
-
-###### Настройка Nginx в Vesta
-
-Нам также нужно чтобы конфиги лежали внутри `Vesta`.
-
-```
-$ su
-$ mkdir /home/admin/conf/web/nginx.conf.d
-$ touch /home/admin/conf/web/nginx.conf.d/youfhe.ru.conf
-```
-
-```
-$ vi /home/admin/conf/web/nginx.conf
-include /home/admin/conf/web/nginx.conf.d/*.conf;
-......
-```
-
-```
-$ vi /home/admin/conf/web/nginx.conf.d/youfhe.ru.conf
-server {
-    listen <host_or_ip>:80 default;
-	server_name youfhe.ru www.youfhe.ru;
-
-    root /home/admin/web/youfhe.ru/public_html/dotplant2/application/web;
-    index index.php;
-
-    #access_log  /var/log/nginx/domains/youfhe.ru.log combined;
-    #access_log  /var/log/nginx/domains/youfhe.ru.bytes bytes;
-    #error_log   /var/log/nginx/domains/youfhe.ru.error.log error;
-
-    access_log  /var/log/apache2/domains/youfhe.ru.log combined;
-    access_log  /var/log/apache2/domains/youfhe.ru.bytes bytes;
-    error_log   /var/log/apache2/domains/youfhe.ru.error.log error;
-
-    location / {    
-        try_files $uri $uri/ /index.php?$args;
-    }
-
-    location ~ \.php$ {
-        try_files $uri =404;
-        fastcgi_split_path_info ^(.+\.php)(/.+)$;
-        fastcgi_pass unix:/var/run/php5-fpm.sock;
-        fastcgi_index index.php;    
-        include fastcgi_params;
-        fastcgi_param  SCRIPT_FILENAME  $document_root$fastcgi_script_name;
-    }
-
-    location ~ /\.ht {
-       deny all;
-    }
-}
-```
-
-```
-$ chown root.admin /home/admin/conf/web/nginx.conf.d
-$ chown root.admin /home/admin/conf/web/nginx.conf.d/*
-```
-
-Удалим предыдущий файл конфигурации:
-
-```
-$ sudo rm /etc/nginx/conf.d/<host_or_ip>.conf
-```
-
-Перзапустим службы
-
-```
-$ sudo service nginx restart
-$ sudo service php5-fpm restart
-```
-
 ###### Установка базовых настроек CMS:
 
 ```
@@ -246,6 +138,134 @@ $ DROP DATABASE `youfh`;
 Также правим в настройках DotPlant2 `/config/db-local.php`.
 
 Добавим базу `admin_youfhe` через `VESTA`.
+
+
+## Настройка Nginx
+
+```
+$ sudo mkdir /etc/nginx/conf.d.src
+$ sudo cp /etc/nginx/conf.d/188.166.17.183.conf /etc/nginx/conf.d.src/188.166.17.183.conf 
+```
+
+```
+$ sudo vi /etc/nginx/conf.d/188.166.17.183.conf
+server {
+    listen 188.166.17.183:80 default;
+	
+	server_name youfhe.ru www.youfhe.ru;
+
+    root /home/admin/web/youfhe.ru/public_html/dotplant2/application/web;
+    index index.php;
+
+    access_log  /var/log/nginx/domains/youfhe.ru.log combined;
+    access_log  /var/log/nginx/domains/youfhe.ru.bytes bytes;
+    error_log   /var/log/nginx/domains/youfhe.ru.error.log error;
+
+    location / {    
+        try_files $uri $uri/ /index.php?$args;
+    }
+
+    location ~ \.php$ {
+        try_files $uri =404;
+        fastcgi_split_path_info ^(.+\.php)(/.+)$;
+        fastcgi_pass unix:/var/run/php5-fpm.sock;
+        fastcgi_index index.php;    
+        include fastcgi_params;
+        fastcgi_param  SCRIPT_FILENAME  $document_root$fastcgi_script_name;
+    }
+
+    location ~ /\.ht {
+       deny all;
+    }
+}
+```
+
+###### Настройка Nginx в Vesta
+
+Нам нужно чтобы конфиги лежали внутри `Vesta`.
+
+```
+$ touch /home/admin/conf/web/nginx.youfhe.ru.conf
+```
+
+```
+$ vi /home/admin/conf/web/nginx.youfhe.ru.conf
+server {
+    listen 188.166.17.183:80 default;
+    server_name youfhe.ru;
+
+    root /home/admin/web/youfhe.ru/public_html/dotplant2/application/web;
+    index index.php;
+
+    #access_log  /var/log/nginx/domains/youfhe.ru.log combined;
+    #access_log  /var/log/nginx/domains/youfhe.ru.bytes bytes;
+    #error_log   /var/log/nginx/domains/youfhe.ru.error.log error;
+
+    access_log  /var/log/apache2/domains/youfhe.ru.log combined;
+    access_log  /var/log/apache2/domains/youfhe.ru.bytes bytes;
+    error_log   /var/log/apache2/domains/youfhe.ru.error.log error;
+
+    location / {
+        try_files $uri $uri/ /index.php?$args;
+
+        location ~* ^.+\.(jpeg|jpg|png|gif|bmp|ico|svg|css|js)$ {
+            expires max;
+        }
+
+        location ~ \.php$ {
+            try_files $uri =404;
+            fastcgi_split_path_info ^(.+\.php)(/.+)$;
+            fastcgi_pass unix:/var/run/php5-fpm.sock;
+            fastcgi_index index.php;    
+            include fastcgi_params;
+            fastcgi_param  SCRIPT_FILENAME  $document_root$fastcgi_script_name;
+        }
+
+        location ~ /\.ht {
+            deny all;
+        }
+    } 
+    
+    error_page  403 /error/404.html;
+    error_page  404 /error/404.html;
+    error_page  500 502 503 504 /error/50x.html;
+
+    location /error/ {
+        alias   /home/admin/web/youfhe.ru/document_errors/;
+    }
+    
+    location ~* "/\.(htaccess|htpasswd)$" {
+        deny    all;
+        return  404;
+    }
+}
+```
+
+```
+$ vi /home/admin/conf/web/nginx.conf
+include /home/admin/conf/web/nginx.youfhe.ru.conf;
+......
+```
+
+```
+$ chown root.admin /home/admin/conf/web/nginx.youfhe.ru.conf
+```
+
+Удалим предыдущий файл конфигурации:
+
+```
+$ sudo rm /etc/nginx/conf.d/188.166.17.183.conf
+```
+
+Перзапустим службы
+
+```
+$ sudo service nginx restart
+$ sudo service php5-fpm restart
+```
+
+**Проверить**. Убедится что файл конфигурации `nginx.youfhe.ru.conf` попадает в backup.
+**Проверено**. Файл конфигурации `nginx.youfhe.ru.conf` попадает в backup.
 
 
 ## Apache
@@ -466,7 +486,7 @@ $ chown root.root /var/www/archive* -R
 
 
 
-###### cron
+###### Cron
 
 ```
 $ su
@@ -480,7 +500,75 @@ $ crontab -e
 
 * /usr/local/vesta/conf/mysql.conf
 
+## VESTA. Отключение резервного копирования
+
+Заходим в задания cron и находим строку sudo /usr/local/vesta/bin/v-backup-users и переводим задание в статус "ЗАБЛОКИРОВАТЬ" ("SUSPEND").
 
 
+## Ограничение доступа по SSH
+
+В файле `/etc/ssh/sshd_config` вносим изменения:
+
+```
+PermitRootLogin yes
+AllowUsers 87.117.167.118
+```
+
+```
+$ service ssh restart
+```
+
+
+## Настройка DNS-записи
+
+Информация: 
+* <http://www.8host.com/blog/redirekt-domena-s-www-na-bez-www-na-nginx-v-centos-7/>
+
+URL: <https://cloud.digitalocean.com/domains/youfhe.ru>
+
+**Zone File** 
+
+```
+$ORIGIN youfhe.ru.
+$TTL 1800
+youfhe.ru. IN SOA ns1.digitalocean.com. hostmaster.youfhe.ru. 1449495774 10800 3600 604800 1800
+youfhe.ru. 1800 IN NS ns1.digitalocean.com.
+youfhe.ru. 1800 IN NS ns2.digitalocean.com.
+youfhe.ru. 1800 IN NS ns3.digitalocean.com.
+youfhe.ru. 1800 IN A 188.166.17.183
+www.youfhe.ru. 1800 IN A 188.166.17.183
+```
+
+
+## Настройка почтового сервера Exim4
+
+Информация:
+* [http://help.ubuntu.ru/wiki/...](http://help.ubuntu.ru/wiki/%D1%80%D1%83%D0%BA%D0%BE%D0%B2%D0%BE%D0%B4%D1%81%D1%82%D0%B2%D0%BE_%D0%BF%D0%BE_ubuntu_server/%D0%BF%D0%BE%D1%87%D1%82%D0%BE%D0%B2%D1%8B%D0%B5_%D1%81%D0%B5%D1%80%D0%B2%D0%B8%D1%81%D1%8B/exim4) 
+
+
+## Настрйока почтовых уведомлений в DotPlant2
+
+Просматривая конфигурационные фалй в папрке `/dotplant2/application/config` видим комментарии:
+
+```
+/*
+ * ! WARNING !
+ *
+ * This file is auto-generated.
+ * Please don't modify it by-hand or all your changes can be lost.
+ */
+```
+
+Следовательно эти настройки надо ментя через админку. Путь к станице `/config/backend/index`. Изменяем данные в колонке `Конфигурации E-mail`:
+
+**Замечание:** 
+
+* `Mail transport: Mail` нужно заполнить только поле "Mail from".
+* `Mail transport: SMTP` нужно заполнить поля:
+  * Mail server,
+  * Mail username,
+  * Mail password, 
+  * Mail server port, 
+  * Mail encryption.
 
 
