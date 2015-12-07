@@ -17,7 +17,7 @@ $ apt-get install  nginx php5-fpm php5-gd php5-json mysql-server php5-mysql php5
 
 ```
 server {
-    listen <host_or_ip>:80 default;
+    listen 188.166.17.183:80 default;
     
     server_name youfhe.ru www.youfhe.ru;
     root /home/admin/web/youfhe.ru/public_html/dotplant2/application/web;
@@ -59,7 +59,7 @@ $ chmod 755 deafult.stpl
 
 
 server {
-    listen      <host_or_ip>:8080;
+    listen 188.166.17.183:8080;
     
     server_name youfhe.ru www.youfhe.ru;
     
@@ -105,7 +105,7 @@ server {
 
 
 server {
-    listen      <host_or_ip>:8080;
+    listen 188.166.17.183:8080;
     
     server_name youfhe.ru www.youfhe.ru;
     
