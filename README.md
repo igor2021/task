@@ -82,13 +82,13 @@ expose_php = Off
 
 ```
 $ sudo mkdir /etc/nginx/conf.d.src
-$ sudo cp /etc/nginx/conf.d/188.166.17.183.conf /etc/nginx/conf.d.src/188.166.17.183.conf 
+$ sudo cp /etc/nginx/conf.d/<host_or_ip>.conf /etc/nginx/conf.d.src/<host_or_ip>.conf 
 ```
 
 ```
-$ sudo vi /etc/nginx/conf.d/188.166.17.183.conf
+$ sudo vi /etc/nginx/conf.d/<host_or_ip>.conf
 server {
-    listen 188.166.17.183:80 default;
+    listen <host_or_ip>:80 default;
 	
 	server_name youfhe.ru www.youfhe.ru;
 
@@ -129,8 +129,8 @@ $ touch /home/admin/conf/web/nginx.youfhe.ru.conf
 ```
 $ vi /home/admin/conf/web/nginx.youfhe.ru.conf
 server {
-    listen 188.166.17.183:80 default;
-    server_name youfhe.ru www.youfhe.ru;
+    listen <host_or_ip>:80 default;
+    server_name youfhe.ru;
 
     root /home/admin/web/youfhe.ru/public_html/dotplant2/application/web;
     index index.php;
@@ -162,8 +162,8 @@ server {
         location ~ /\.ht {
             deny all;
         }
-   }
-
+    } 
+    
     error_page  403 /error/404.html;
     error_page  404 /error/404.html;
     error_page  500 502 503 504 /error/50x.html;
@@ -192,7 +192,7 @@ $ chown root.admin /home/admin/conf/web/nginx.youfhe.ru.conf
 Удалим предыдущий файл конфигурации:
 
 ```
-$ sudo rm /etc/nginx/conf.d/188.166.17.183.conf
+$ sudo rm /etc/nginx/conf.d/<host_or_ip>.conf
 ```
 
 Перзапустим службы
@@ -203,6 +203,33 @@ $ sudo service php5-fpm restart
 ```
 
 **TODO**: Убедится что файл конфигурации `nginx.youfhe.ru.conf` попадает в backup.
+
+
+###### Настройка редиректа Nginx
+
+Редирект с www на без www
+
+```
+$ sudo vi /etc/nginx/conf.d/redirect.conf
+server {
+     listen 80;
+     server_name  www.youfhe.ru;
+     rewrite ^ http://youfhe.ru$request_uri? permanent; 
+}
+```
+
+###### Настройка DNS-записи
+
+Информация взята с сайта: <http://www.8host.com/blog/redirekt-domena-s-www-na-bez-www-na-nginx-v-centos-7/>
+
+Чтобы настроить редирект с www.example.com на example.com (или наоборот), нужно создать запись для каждого имени.
+
+Откройте панель управления DNS.
+
+Если записи домена (также называется зоной) на данный момент не существует, создайте её сейчас. В hostname укажите доменное имя (к примеру, example.com), в поле IP address нужно указать внешний IP-адрес сервера Nginx. Некоторые системы создают запись A, которая указывает на заданный IP-адрес, автоматически, а некоторые требуют создавать такие записи вручную.
+
+Затем создайте еще одну запись А, на этот раз для адреса с префиксом www, указав тот же IP-адрес.
+
 
 ###### Установка базовых настроек CMS:
 
@@ -263,6 +290,9 @@ $ DROP DATABASE `youfh`;
 
 Добавим базу `admin_youfhe` через `VESTA`.
 
+## Отключить резервное копирование в VESTA.
+
+Заходим в задания cron и находим строку sudo /usr/local/vesta/bin/v-backup-users и переводим задание в статус SUSPEND.
 
 ## Apache
 

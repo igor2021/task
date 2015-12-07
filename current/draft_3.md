@@ -82,13 +82,13 @@ expose_php = Off
 
 ```
 $ sudo mkdir /etc/nginx/conf.d.src
-$ sudo cp /etc/nginx/conf.d/188.166.17.183.conf /etc/nginx/conf.d.src/188.166.17.183.conf 
+$ sudo cp /etc/nginx/conf.d/<host_or_ip>.conf /etc/nginx/conf.d.src/<host_or_ip>.conf 
 ```
 
 ```
-$ sudo vi /etc/nginx/conf.d/188.166.17.183.conf
+$ sudo vi /etc/nginx/conf.d/<host_or_ip>.conf
 server {
-    listen 188.166.17.183:80 default;
+    listen <host_or_ip>:80 default;
 	
 	server_name youfhe.ru www.youfhe.ru;
 
@@ -137,7 +137,7 @@ include /home/admin/conf/web/nginx.conf.d/*.conf;
 ```
 $ vi /home/admin/conf/web/nginx.conf.d/youfhe.ru.conf
 server {
-    listen 188.166.17.183:80 default;
+    listen <host_or_ip>:80 default;
 	server_name youfhe.ru www.youfhe.ru;
 
     root /home/admin/web/youfhe.ru/public_html/dotplant2/application/web;
@@ -178,7 +178,7 @@ $ chown root.admin /home/admin/conf/web/nginx.conf.d/*
 Удалим предыдущий файл конфигурации:
 
 ```
-$ sudo rm /etc/nginx/conf.d/188.166.17.183.conf
+$ sudo rm /etc/nginx/conf.d/<host_or_ip>.conf
 ```
 
 Перзапустим службы
