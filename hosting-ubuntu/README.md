@@ -3,7 +3,9 @@
 
 ## DotPlant2
 
-Документация по "DotPlant2": <http://docs.dotplant.ru/ru/setup-example.html>
+Документация по "DotPlant2": 
+* <http://docs.dotplant.ru/ru/setup-example.html>
+* <https://github.com/DevGroup-ru/dotplant2-docs>
 
 ###### Обновляем пакеты и устанавливаем необходимые пакеты:
 
@@ -78,7 +80,67 @@ $ sudo vi /etc/php5/cgi/php.ini
 expose_php = Off
 ```
 
-###### Настройка Nginx
+###### Установка базовых настроек CMS:
+
+```
+$ ./installer
+```
+
+## Правки по DotPlant2 (1)
+
+###### Cоздание новой базы MySQL, дамп и востанновление из дампа, удаление старой базы:
+
+```
+$ mysql -u root -p
+CREATE DATABASE youfh DEFAULT CHARACTER SET utf8 COLLATE utf8_general_ci;
+CREATE USER 'youfh'@'localhost' IDENTIFIED BY '<password>';
+GRANT ALL PRIVILEGES ON youfh.* TO 'youfh'@'localhost';
+FLUSH PRIVILEGES;
+```
+
+```
+$ mysqldump -u root -p dotplant2 > /home/admin/tmp/dotplant2.sql 
+$ mysql -u root -p youfh < /home/admin/tmp/dotplant2.sql 
+```
+
+```
+$ mysql -u root -p
+$ DROP DATABASE `dotplant2`;
+```
+
+Также правим в настройках DotPlant2 `./config/db-local.php`.
+
+
+## Правки по DotPlant2 (2)
+
+Чтобы все-таки привязать базу к `VESTA` сделаем следующие правки.
+
+###### Cоздание новой базы MySQL, дамп и востанновление из дампа, удаление старой базы:
+
+```
+$ mysql -u root -p
+CREATE DATABASE admin_youfhe DEFAULT CHARACTER SET utf8 COLLATE utf8_general_ci;
+CREATE USER 'admin_youfhe'@'localhost' IDENTIFIED BY '<password>';
+GRANT ALL PRIVILEGES ON admin_youfhe.* TO 'admin_youfhe'@'localhost';
+FLUSH PRIVILEGES;
+```
+
+```
+$ mysqldump -u root -p youfh > /home/admin/tmp/youfh.sql 
+$ mysql -u root -p admin_youfhe < /home/admin/tmp/youfh.sql 
+```
+
+```
+$ mysql -u root -p
+$ DROP DATABASE `youfh`;
+```
+
+Также правим в настройках DotPlant2 `/config/db-local.php`.
+
+Добавим базу `admin_youfhe` через `VESTA`.
+
+
+## Настройка Nginx
 
 ```
 $ sudo mkdir /etc/nginx/conf.d.src
@@ -202,97 +264,9 @@ $ sudo service nginx restart
 $ sudo service php5-fpm restart
 ```
 
-**TODO**: Убедится что файл конфигурации `nginx.youfhe.ru.conf` попадает в backup.
+**Проверить**. Убедится что файл конфигурации `nginx.youfhe.ru.conf` попадает в backup.
+**Проверено**. Файл конфигурации `nginx.youfhe.ru.conf` попадает в backup.
 
-
-###### Настройка редиректа Nginx
-
-Редирект с www на без www
-
-```
-$ sudo vi /etc/nginx/conf.d/redirect.conf
-server {
-     listen 80;
-     server_name  www.youfhe.ru;
-     rewrite ^ http://youfhe.ru$request_uri? permanent; 
-}
-```
-
-###### Настройка DNS-записи
-
-Информация взята с сайта: <http://www.8host.com/blog/redirekt-domena-s-www-na-bez-www-na-nginx-v-centos-7/>
-
-Чтобы настроить редирект с www.example.com на example.com (или наоборот), нужно создать запись для каждого имени.
-
-Откройте панель управления DNS.
-
-Если записи домена (также называется зоной) на данный момент не существует, создайте её сейчас. В hostname укажите доменное имя (к примеру, example.com), в поле IP address нужно указать внешний IP-адрес сервера Nginx. Некоторые системы создают запись A, которая указывает на заданный IP-адрес, автоматически, а некоторые требуют создавать такие записи вручную.
-
-Затем создайте еще одну запись А, на этот раз для адреса с префиксом www, указав тот же IP-адрес.
-
-
-###### Установка базовых настроек CMS:
-
-```
-$ ./installer
-```
-
-## Правки по DotPlant2 (1)
-
-###### Cоздание новой базы MySQL, дамп и востанновление из дампа, удаление старой базы:
-
-```
-$ mysql -u root -p
-CREATE DATABASE youfh DEFAULT CHARACTER SET utf8 COLLATE utf8_general_ci;
-CREATE USER 'youfh'@'localhost' IDENTIFIED BY '<password>';
-GRANT ALL PRIVILEGES ON youfh.* TO 'youfh'@'localhost';
-FLUSH PRIVILEGES;
-```
-
-```
-$ mysqldump -u root -p dotplant2 > /home/admin/tmp/dotplant2.sql 
-$ mysql -u root -p youfh < /home/admin/tmp/dotplant2.sql 
-```
-
-```
-$ mysql -u root -p
-$ DROP DATABASE `dotplant2`;
-```
-
-Также правим в настройках DotPlant2 `./config/db-local.php`.
-
-
-## Правки по DotPlant2 (2)
-
-Чтобы все-таки привязать базу к `VESTA` сделаем следующие правки.
-
-###### Cоздание новой базы MySQL, дамп и востанновление из дампа, удаление старой базы:
-
-```
-$ mysql -u root -p
-CREATE DATABASE admin_youfhe DEFAULT CHARACTER SET utf8 COLLATE utf8_general_ci;
-CREATE USER 'admin_youfhe'@'localhost' IDENTIFIED BY '<password>';
-GRANT ALL PRIVILEGES ON admin_youfhe.* TO 'admin_youfhe'@'localhost';
-FLUSH PRIVILEGES;
-```
-
-```
-$ mysqldump -u root -p youfh > /home/admin/tmp/youfh.sql 
-$ mysql -u root -p admin_youfhe < /home/admin/tmp/youfh.sql 
-```
-
-```
-$ mysql -u root -p
-$ DROP DATABASE `youfh`;
-```
-
-Также правим в настройках DotPlant2 `/config/db-local.php`.
-
-Добавим базу `admin_youfhe` через `VESTA`.
-
-## Отключить резервное копирование в VESTA.
-
-Заходим в задания cron и находим строку sudo /usr/local/vesta/bin/v-backup-users и переводим задание в статус SUSPEND.
 
 ## Apache
 
@@ -512,7 +486,7 @@ $ chown root.root /var/www/archive* -R
 
 
 
-###### cron
+###### Cron
 
 ```
 $ su
@@ -526,11 +500,75 @@ $ crontab -e
 
 * /usr/local/vesta/conf/mysql.conf
 
+## VESTA. Отключение резервного копирования
+
+Заходим в задания cron и находим строку sudo /usr/local/vesta/bin/v-backup-users и переводим задание в статус "ЗАБЛОКИРОВАТЬ" ("SUSPEND").
+
 
 ## Ограничение доступа по SSH
 
-Это последнее что надо сдлетать. Но сначало надо убедится что все сделано как надо.
+В файле `/etc/ssh/sshd_config` вносим изменения:
 
-**TODO** 
+```
+PermitRootLogin yes
+AllowUsers 87.117.167.118
+```
+
+```
+$ service ssh restart
+```
+
+
+## Настройка DNS-записи
+
+Информация: 
+* <http://www.8host.com/blog/redirekt-domena-s-www-na-bez-www-na-nginx-v-centos-7/>
+
+URL: <https://cloud.digitalocean.com/domains/youfhe.ru>
+
+**Zone File** 
+
+```
+$ORIGIN youfhe.ru.
+$TTL 1800
+youfhe.ru. IN SOA ns1.digitalocean.com. hostmaster.youfhe.ru. 1449495774 10800 3600 604800 1800
+youfhe.ru. 1800 IN NS ns1.digitalocean.com.
+youfhe.ru. 1800 IN NS ns2.digitalocean.com.
+youfhe.ru. 1800 IN NS ns3.digitalocean.com.
+youfhe.ru. 1800 IN A 188.166.17.183
+www.youfhe.ru. 1800 IN A 188.166.17.183
+```
+
+
+## Настройка почтового сервера Exim4
+
+Информация:
+* [http://help.ubuntu.ru/wiki/...](http://help.ubuntu.ru/wiki/%D1%80%D1%83%D0%BA%D0%BE%D0%B2%D0%BE%D0%B4%D1%81%D1%82%D0%B2%D0%BE_%D0%BF%D0%BE_ubuntu_server/%D0%BF%D0%BE%D1%87%D1%82%D0%BE%D0%B2%D1%8B%D0%B5_%D1%81%D0%B5%D1%80%D0%B2%D0%B8%D1%81%D1%8B/exim4) 
+
+
+## Настрйока почтовых уведомлений в DotPlant2
+
+Просматривая конфигурационные фалй в папрке `/dotplant2/application/config` видим комментарии:
+
+```
+/*
+ * ! WARNING !
+ *
+ * This file is auto-generated.
+ * Please don't modify it by-hand or all your changes can be lost.
+ */
+```
+
+Следовательно эти настройки надо ментя через админку. Путь к станице `/config/backend/index`. Изменяем данные в колонке `Конфигурации E-mail`:
+
+**Замечание:** 
+
+* `Mail transport: Mail` нужно заполнить только поле "Mail from".
+* `Mail transport: SMTP` нужно заполнить поля:
+  * Mail server,
+  * Mail username,
+  * Mail password, 
+  * Mail server port, 
+  * Mail encryption.
 
 
