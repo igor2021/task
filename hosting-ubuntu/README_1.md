@@ -37,7 +37,7 @@ $ cd ~/web/youfhe.ru/public_html
 $ git clone https://github.com/DevGroup-ru/dotplant2.git
 $ cd dotplant2/application
 $ php ../composer.phar global require "fxp/composer-asset-plugin:~1.0"
-# php ../composer.phar install --prefer-dist --optimize-autoloader
+$ php ../composer.phar install --prefer-dist --optimize-autoloader
 ```
 
 ###### Проверяем тербования:
@@ -85,6 +85,23 @@ expose_php = Off
 ```
 $ ./installer
 ```
+
+
+###### черновик
+```
+$ chmod 666 /home/admin/web/youfhe.ru/public_html/dotplant2/application/config/configurables-state/core.php
+```
+
+```
+$ find /home/admin/web/youfhe.ru/public_html/dotplant2/application/config* -type d -exec chmod 666 {} \;
+
+/home/admin/web/youfhe.ru/public_html/dotplant2/application/extensions/DefaultTheme/assets/theme/sass
+
+```
+
+
+
+
 
 ## Правки по DotPlant2 (1)
 
@@ -265,7 +282,23 @@ $ sudo service php5-fpm restart
 ```
 
 **Проверить**. Убедится что файл конфигурации `nginx.youfhe.ru.conf` попадает в backup.
+
 **Проверено**. Файл конфигурации `nginx.youfhe.ru.conf` попадает в backup.
+
+
+###### Группы
+
+
+```
+$ cat /etc/passwd
+$ cat /etc/group
+```
+
+```
+$ gpasswd -a nginx admin
+$ gpasswd -a root admin
+$ gpasswd -a www-data admin
+```
 
 
 ## Apache
@@ -544,6 +577,104 @@ www.youfhe.ru. 1800 IN A 188.166.17.183
 
 Информация:
 * [http://help.ubuntu.ru/wiki/...](http://help.ubuntu.ru/wiki/%D1%80%D1%83%D0%BA%D0%BE%D0%B2%D0%BE%D0%B4%D1%81%D1%82%D0%B2%D0%BE_%D0%BF%D0%BE_ubuntu_server/%D0%BF%D0%BE%D1%87%D1%82%D0%BE%D0%B2%D1%8B%D0%B5_%D1%81%D0%B5%D1%80%D0%B2%D0%B8%D1%81%D1%8B/exim4) 
+
+* http://lib.clodo.ru/email/exim_debian.html
+
+
+```
+$ sudo dpkg-reconfigure exim4-config
+```
+
+* send mail by smarthost; no local mail
+
+* System mail name: youfhe.ru
+
+* IP address to listen on for incomming SMTP connections: 127.0.0.1 ; ::1
+
+* Other destinations for which mail accepted: h01.mylinker.ru
+
+* Visible domain name for local users: h01.mylinker.ru
+
+* IP address or host name of outgoing smarthost: h01.mylinker.ru
+
+* Keep number of DNS-queries minimal (Dial-on-Demand)? : yes
+
+* Split configuration info small files? : no
+
+
+Все параметры, которые вы настроите в пользовательском интерфейсе будут сохранены в файле `/etc/exim4/update-exim4.conf`. Если вы захотите что-то перенастроить, или перезапустите мастера настройки или вручную поправьте данный файл любым редактором. После настройки вам потребуется выполнить следующую команду для создания главного файла настроек: 
+
+```
+$ sudo update-exim4.conf
+```
+
+```
+$ sudo /etc/init.d/exim4 start
+```
+
+
+
+###### Аутентификация SMTP
+
+Эта секция раскрывает как настроить Exim4 для использования SMTP-AUTH с TLS и SASL.
+
+Первым шагом будет создание сертификата для использования TLS. Введите следующее в терминале: 
+
+```
+$ sudo /usr/share/doc/exim4-base/examples/exim-gencert
+Country Code (two latter): RU
+State or Province Name (full name): Tatarstan
+Localy Name (eg, city): Kazan
+Organization Name (eq, company; recommended): AK
+Organization Unit name (eq, section):
+Server name (eg. ssl.domain.tld; required!!!): youfhe.ru
+Email Address: 
+```
+
+??? Теперь Exim4 нуждается в настройке TLS. Отредактируйте `/etc/exim4/conf.d/main/03_exim4-config_tlsoptions`, добавив следующее: 
+
+```
+MAIN_TLS_ENABLE = yes
+```
+
+###### Добавление пользователя
+
+Чтобы внешний почтовый клиент имел возможность соединиться с вашим новым exim сервером, требуется добавить нового пользователя в exim, используя следующие команды:
+
+```
+$ sudo /usr/share/doc/exim4/examples/exim-adduser
+```
+
+
+```
+$ sudo update-exim4.conf
+$ sudo /etc/init.d/exim4 restart
+```
+
+
+
+## Exim4 и Dovecot
+
+### Dovecot
+
+Информация:
+
+* http://vladimir-stupin.blogspot.ru/2014/05/exim-dovecot-sql.html
+
+```
+# groupadd -g 120 -r vmail
+# useradd -g 120 -r -u 120 vmail
+# mkdir /home/vmail
+# chown vmail:vmail /home/vmail
+# chmod u=rwx,g=rx,o= /home/vmail
+```
+
+
+
+
+
+
+
 
 
 ## Настрйока почтовых уведомлений в DotPlant2
